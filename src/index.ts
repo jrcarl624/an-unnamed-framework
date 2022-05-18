@@ -91,7 +91,6 @@ interface CommandOptions {
  * @param {string[]} tags
  * @returns {Command}
  * @constructor
- *
  */
 
 interface ArgType {
@@ -133,10 +132,11 @@ const ChatBuilder = class {
 	blacklist: string[] = [];
 
 	constructor() {
-		//database to set configs
+		//TODO: database to set configs
 		if (typeof this.prefix === "undefined") {
 			this.prefix = cfg.prefix;
 		}
+
 		if (this.blacklist == []) {
 			this.blacklist = cfg.blacklist;
 		}
@@ -150,7 +150,7 @@ const ChatBuilder = class {
 						commandName === i.name ||
 						i.options.aliases.indexOf(commandName) !== -1
 					) {
-						//arg stuff and execution
+						//TODO: arg stuff and execution
 
 						return;
 					} else continue;
@@ -194,6 +194,7 @@ const ChatBuilder = class {
 	}
 };
 
+//formatting
 interface Command {
 	name: string;
 	callback: (...args) => {};
