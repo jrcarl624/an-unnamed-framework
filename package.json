@@ -10,14 +10,15 @@
   "license": "ISC",
   "dependencies": {
     "@sfirew/mc-motd-parser": "^1.0.8",
-    "@types/mojang-gametest": "^0.1.4",
-    "@types/mojang-minecraft": "^0.1.5",
     "bedrock-protocol": "^3.13.0",
     "browserify": "^17.0.0",
     "chalk": "^5.0.1",
+    "dts-parser": "^0.1.0",
     "tsify": "^5.0.4"
   },
   "devDependencies": {
+    "@types/mojang-gametest": "^0.1.4",
+    "@types/mojang-minecraft": "^0.1.5",
     "@types/node": "^17.0.34"
   }
 }
