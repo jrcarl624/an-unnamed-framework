@@ -1,3 +1,5 @@
+import { world as World, BeforeChatEvent } from "mojang-minecraft";
+import { cfg } from "../";
 interface CommandOptions {
 	aliases: string[];
 	description: string;
@@ -5,6 +7,7 @@ interface CommandOptions {
 	args: ArgType[][];
 	tags?: string[];
 }
+const example = "!we 3 5 3 8 3 7 ";
 
 /**
  * @param {string} label
@@ -31,7 +34,7 @@ interface ArgType {
 }
 
 const command = (callback: (...args) => {}, options: CommandOptions) => {};
-
+//@ts-ignore
 const Arg: ArgType = {
 	label: "",
 	description: "",
@@ -55,9 +58,8 @@ const ChatBuilder = class {
 			this.prefix = cfg.prefix;
 		}
 
-		if (this.blacklist == []) {
-			this.blacklist = cfg.blacklist;
-		}
+		this.blacklist = cfg.blacklist;
+
 		World.events.beforeChat.subscribe((data: BeforeChatEvent) => {
 			if (data.message.startsWith(this.prefix)) {
 				let commandName = data.message

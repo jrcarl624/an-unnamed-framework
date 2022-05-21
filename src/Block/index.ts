@@ -1,22 +1,16 @@
 import {
-	Vector,
 	Block as _Block,
 	BlockPermutation,
 	Location,
 	BlockLocation,
 	world as World,
-	MinecraftDimensionTypes,
 	Dimension,
-	ItemStack,
 	NumberRange as _NumberRange,
-	IEntityComponent,
-	Entity,
 	MinecraftBlockTypes,
 } from "mojang-minecraft";
+import BlockComponents from "./components";
 
 const Matrix: any = "";
-
-const example = "!we 3 5 3 8 3 7 ";
 
 const error = (code: number | string, line: number, message?: string) => {
 	switch (code) {
@@ -179,8 +173,6 @@ const graph = class {
 	}
 };
 
-type Identifier = `${Lowercase<string>}:${Lowercase<string>}`;
-
 class Block extends _Block implements _Block {
 	constructor(
 		dimension: Dimension,
@@ -216,6 +208,7 @@ class NumberRange extends _NumberRange implements _NumberRange {
 
 export const BlockBuilder = class {
 	block: Block;
+	id: Identifier;
 	constructor(
 		block: Block,
 		dimension?: Dimension,

@@ -1,6 +1,6 @@
 import { Block,BlockPistonComponent,BlockInventoryComponent,BlockLavaContainerComponent,BlockPotionContainerComponent,BlockRecordPlayerComponent,BlockSnowContainerComponent,BlockWaterContainerComponent,} from "mojang-minecraft";
 export default class {
-	block: Block;
+	private block: Block;
 	constructor(block: Block) {
 		this.block = block;
 	}

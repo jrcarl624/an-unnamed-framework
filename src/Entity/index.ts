@@ -1,4 +1,4 @@
-import { Entity } from "mojang-minecraft";
+import { Entity, Events, IEntityComponent } from "mojang-minecraft";
 import EntityComponents from "./components";
 
 export const EntityBuilder = class {
@@ -7,7 +7,15 @@ export const EntityBuilder = class {
 		this.entity = entity;
 	}
 
-	get components(): EntityComponents {
+	get component(): EntityComponents {
 		return new EntityComponents(this.entity);
+	}
+	get components(): EntityComponents {
+		let list = {};
+		for (let i in this.component) {
+			list[i] = this.component[i];
+		}
+		//
+		return list as EntityComponents;
 	}
 };

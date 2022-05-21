@@ -1,20 +1,20 @@
 import { ItemStack,ItemCooldownComponent,ItemDurabilityComponent,ItemEnchantsComponent,ItemFoodComponent,} from "mojang-minecraft";
 export default class {
-	item: ItemStack;
+	private item: ItemStack;
 	constructor(item: ItemStack) {
 		this.item = item;
 	}
 	
-	get cooldown(): ItemCooldownComponent {
-		return this.item.getComponent("cooldown") as ItemCooldownComponent;
+	get itemCooldown(): ItemCooldownComponent {
+		return this.item.getComponent("itemCooldown") as ItemCooldownComponent;
 	}
-	get durability(): ItemDurabilityComponent {
-		return this.item.getComponent("durability") as ItemDurabilityComponent;
+	get itemDurability(): ItemDurabilityComponent {
+		return this.item.getComponent("itemDurability") as ItemDurabilityComponent;
 	}
-	get enchants(): ItemEnchantsComponent {
-		return this.item.getComponent("enchants") as ItemEnchantsComponent;
+	get itemEnchants(): ItemEnchantsComponent {
+		return this.item.getComponent("itemEnchants") as ItemEnchantsComponent;
 	}
-	get food(): ItemFoodComponent {
-		return this.item.getComponent("food") as ItemFoodComponent;
+	get itemFood(): ItemFoodComponent {
+		return this.item.getComponent("itemFood") as ItemFoodComponent;
 	}
 }

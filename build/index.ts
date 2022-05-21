@@ -1,12 +1,16 @@
-import * as tsOptions from "../tsconfig.json";
-import * as browserify from "browserify";
+import browserify from "browserify";
 import tsify from "tsify";
+import fs from "fs";
+import * as json from "jsonc-parser";
 
-browserify()
-	.add("main.ts")
-	.plugin(tsify, tsOptions.compilerOptions)
+const tsconfig = fs.readFileSync("./tsconfig.json", "utf8");
+
+browserify(["./src/index.ts"], {
+	builtins: true,
+})
+	.plugin(tsify, json.parse(tsconfig))
 	.bundle()
-	.on("error", function (error) {
+	.on("error", (error) => {
 		console.error(error.toString());
 	})
-	.pipe(process.stdout);
+	.pipe(fs.createWriteStream("./build/index.js"));

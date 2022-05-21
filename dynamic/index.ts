@@ -1,6 +1,6 @@
 import * as fs from "fs";
-import { Entity } from "mojang-minecraft";
 import * as path from "path";
+import { Entity } from "mojang-minecraft";
 
 const minecraftTypes = fs.readFileSync(
 	path.join(
@@ -14,6 +14,10 @@ const minecraftTypes = fs.readFileSync(
 	"utf8"
 );
 
+const firstCharLowerCase = (str: string) => {
+	return str.charAt(0).toLowerCase() + str.slice(1);
+};
+
 const gameTestTypes = fs.readFileSync(
 	path.join(
 		__dirname,
@@ -22,16 +26,23 @@ const gameTestTypes = fs.readFileSync(
 		"@types",
 		"mojang-gametest",
 		"index.d.ts"
-	)
+	),
+	"utf8"
 );
 
-let componentTypes = {
+var componentTypes: Record<string, string[]> = {
 	item: [],
 	block: [],
 	entity: [],
 };
 
+var eventTypes: string[] = [];
 for (let line of minecraftTypes.split("\n")) {
+	if (line.match(/readonly '[ \S]+': \S+EventSignal/)) {
+		let match = line.match(/(?:': )(\S+)(?:EventSignal)/);
+		eventTypes.push(firstCharLowerCase(match[1]));
+	}
+
 	if (line.match(/extends IEntityComponent/)) {
 		let match = line
 			.match(/Entity[\s\S]+Component/)[0]
@@ -59,7 +70,7 @@ for (let line of minecraftTypes.split("\n")) {
 
 var EntityComponentClass = `} from "mojang-minecraft";
 export default class {
-	entity: Entity;
+	private entity: Entity;
 	constructor(entity: Entity) {
 		this.entity = entity;
 	}
@@ -67,17 +78,9 @@ export default class {
 
 var EntityComponentImports = `import { Entity,`;
 for (let i of componentTypes.entity) {
-	let componentName =
-		i
-			.replace(/^Entity/, "")
-			.replace(/Component$/, "")
-			.charAt(0)
-			.toLowerCase() +
-		i
-
-			.replace(/^Entity/, "")
-			.replace(/Component$/, "")
-			.slice(1);
+	let componentName = firstCharLowerCase(
+		i.replace(/^Entity/, "").replace(/Component$/, "")
+	);
 
 	EntityComponentClass += `
 	get ${componentName}(): ${i} {
@@ -96,7 +99,7 @@ fs.writeFileSync(
 
 var BlockComponentClass = `} from "mojang-minecraft";
 export default class {
-	block: Block;
+	private block: Block;
 	constructor(block: Block) {
 		this.block = block;
 	}
@@ -104,17 +107,9 @@ export default class {
 
 var BlockComponentImports = `import { Block,`;
 for (let i of componentTypes.block) {
-	let componentName =
-		i
-			.replace(/^Block/, "")
-			.replace(/Component$/, "")
-			.charAt(0)
-			.toLowerCase() +
-		i
-
-			.replace(/^Block/, "")
-			.replace(/Component$/, "")
-			.slice(1);
+	let componentName = firstCharLowerCase(
+		i.replace(/^Block/, "").replace(/Component$/, "")
+	);
 
 	BlockComponentClass += `
 	get ${componentName}(): ${i} {
@@ -133,7 +128,7 @@ fs.writeFileSync(
 
 var ItemComponentClass = `} from "mojang-minecraft";
 export default class {
-	item: ItemStack;
+	private item: ItemStack;
 	constructor(item: ItemStack) {
 		this.item = item;
 	}
@@ -141,17 +136,9 @@ export default class {
 
 var ItemComponentImports = `import { ItemStack,`;
 for (let i of componentTypes.item) {
-	let componentName =
-		i
-			.replace(/^Item/, "")
-			.replace(/Component$/, "")
-			.charAt(0)
-			.toLowerCase() +
-		i
-
-			.replace(/^Item/, "")
-			.replace(/Component$/, "")
-			.slice(1);
+	let componentName = firstCharLowerCase(
+		i.replace(/^Entity/, "").replace(/Component$/, "")
+	);
 
 	ItemComponentClass += `
 	get ${componentName}(): ${i} {
@@ -167,3 +154,4 @@ fs.writeFileSync(
 	`./src/Item/components.ts`,
 	ItemComponentImports + ItemComponentClass
 );
+console.log(eventTypes);
