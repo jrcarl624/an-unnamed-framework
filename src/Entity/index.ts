@@ -6,7 +6,6 @@ export const EntityBuilder = class {
 	constructor(entity: Entity) {
 		this.entity = entity;
 	}
-
 	get component(): EntityComponents {
 		return new EntityComponents(this.entity);
 	}

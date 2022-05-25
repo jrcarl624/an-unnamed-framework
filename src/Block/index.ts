@@ -10,6 +10,7 @@ import {
 } from "mojang-minecraft";
 import BlockComponents from "./components";
 
+import { Identifier } from "../../types/index";
 const Matrix: any = "";
 
 const error = (code: number | string, line: number, message?: string) => {
@@ -208,7 +209,11 @@ class NumberRange extends _NumberRange implements _NumberRange {
 
 export const BlockBuilder = class {
 	block: Block;
-	id: Identifier;
+
+	get id(): Identifier {
+		return this.block.id as Identifier;
+	}
+
 	constructor(
 		block: Block,
 		dimension?: Dimension,
@@ -217,15 +222,26 @@ export const BlockBuilder = class {
 	) {
 		block = block || new Block(dimension, location, permutation);
 	}
-
+	//TODO: setter for dimension and location
 	get location(): BlockLocation {
 		return this.block.location;
 	}
-
+	get dimension(): Dimension {
+		return this.block.dimension;
+	}
+	get permutation(): BlockPermutation {
+		return this.block.permutation;
+	}
 	set permutation(permutation: BlockPermutation) {
 		this.block.setPermutation(permutation);
 	}
+
+	//TODO: set id(id: Identifier) {}
+
 	get component(): BlockComponents {
 		return new BlockComponents(this.block);
+	}
+	get isWaterLogged(): boolean {
+		return this.block.isWaterlogged;
 	}
 };

@@ -1,0 +1,24 @@
+[
+  '',       'async_hooks',
+  '',       'child_process',
+  'cluster',      '',
+  'dgram',        'diagnostics_channel',
+  'dns',          '',
+  '',       'fs',
+  'http',         'http2',
+  'https',        'inspector',
+  'module',       'net',
+  'os',           'path',
+  'perf_hooks',   'process',
+  'punycode',     'querystring',
+  'readline',     'repl',
+  'stream',       'string_decoder',
+  'timers',       'tls',
+  'trace_events', 'tty',
+  'url',          'util',
+  'v8',           'vm',
+  'wasi',         'worker_threads',
+  'zlib'
+]
+
+

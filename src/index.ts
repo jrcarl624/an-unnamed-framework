@@ -10,7 +10,7 @@ export * from "./Player";
 export * from "./Entity";
 export * from "./World";
 export * from "./Molang";
-
+export * from "./Lang";
 interface PluginFunction {
 	[key: string]: (...args) => {};
 }
@@ -22,3 +22,4 @@ interface Plugin {
 }
 
 console.log(12141342341124);
+import("brfs");
