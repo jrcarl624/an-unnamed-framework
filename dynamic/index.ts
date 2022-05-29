@@ -1,6 +1,5 @@
-import * as fs from "fs";
-import * as path from "path";
-import { Entity } from "mojang-minecraft";
+import fs from "fs";
+import path from "path";
 
 const minecraftTypes = fs.readFileSync(
 	path.join(
@@ -44,6 +43,7 @@ for (let line of minecraftTypes.split("\n")) {
 	}
 
 	if (line.match(/extends IEntityComponent/)) {
+		//@ts-ignore
 		let match = line
 			.match(/Entity[\s\S]+Component/)[0]
 			.replace(/ extends IEntityComponent/, "");
@@ -53,6 +53,7 @@ for (let line of minecraftTypes.split("\n")) {
 		}
 	}
 	if (line.match(/Item[\s\S]+Component/)) {
+		//@ts-ignore
 		let match = line.match(/Item[\s\S]+Component/)[0];
 
 		if (!componentTypes.item.includes(match)) {
@@ -60,6 +61,7 @@ for (let line of minecraftTypes.split("\n")) {
 		}
 	}
 	if (line.match(/Block[\s\S]+Component/)) {
+		//@ts-ignore
 		let match = line.match(/Block[\s\S]+Component/)[0];
 
 		if (!componentTypes.block.includes(match)) {
@@ -154,4 +156,24 @@ fs.writeFileSync(
 	`./src/Item/components.ts`,
 	ItemComponentImports + ItemComponentClass
 );
-console.log(eventTypes);
+
+var EventClass = `} from "mojang-minecraft";
+export default class {
+	private item: ItemStack;
+	constructor(item: ItemStack) {
+		this.item = item;
+	}`;
+
+var EventImports = `import { ItemStack,`;
+for (let i of eventTypes) {
+	EventClass += `
+	get ${i}(): ${i} {
+		return this.item.getComponent("${i}") as ${i};
+	}`;
+	EventImports += `${i},`;
+}
+
+ItemComponentClass += `
+}`;
+
+fs.writeFileSync(`./src/Item/components.ts`, EventImports + EventClass);

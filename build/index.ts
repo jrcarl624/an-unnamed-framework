@@ -14,10 +14,31 @@ const tsConfig = json.parse(
 	fs.readFileSync("./tsconfig.json", "utf8")
 ) as Record<string, any>;
 
+const _requireESM_ = (m) => {
+	let M;
+	(async () => {
+		M = await import(m);
+	})();
+	return M;
+};
+
 let browserifyConfig: Options = {
 	browserField: "minecraft-bedrock",
 	detectGlobals: true,
 	ignoreMissing: true,
+	insertGlobalVars: {
+		_requireESM_: (m) => {
+			let M;
+			(async () => {
+				M = await import(m);
+			})();
+			return M;
+		},
+		setTimeout: require("mbcore-gametest").setTickTimeout,
+		setInterval: require("mbcore-gametest").setTickInterval,
+		clearTimeout: require("mbcore-gametest").clearTickTimeout,
+		clearInterval: require("mbcore-gametest").clearTickInterval,
+	},
 	plugin: [[tsify, tsConfig]],
 };
 
@@ -54,9 +75,8 @@ b.on("error", (error) => {
 
 bundle.pipe(
 	fs.createWriteStream(config.outFile).on("close", () => {
-		let fileRead =
-			"const _requireESM_ = m => {let M;(async()=>{M=await import(m)})();return M};" +
-			fs.readFileSync(config.outFile, "utf8");
+		let fileRead = fs.readFileSync("beforeExecution.js", "utf8");
+		+fs.readFileSync(config.outFile, "utf8");
 
 		fs.writeFileSync(
 			config.outFile,

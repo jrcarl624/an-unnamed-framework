@@ -12,6 +12,9 @@
   "dependencies": {
     "@sfirew/mc-motd-parser": "^1.0.8",
     "@types/browserify": "^12.0.37",
+    "@types/mojang-minecraft-server-admin": "^0.1.0",
+    "@types/mojang-minecraft-ui": "^0.1.0",
+    "@types/mojang-net": "^0.1.0",
     "bedrock-protocol": "^3.13.0",
     "brfs": "^2.0.2",
     "browserify": "^17.0.0",
@@ -21,14 +24,15 @@
     "envlocalify": "^1.1.1",
     "jsonc": "^2.0.0",
     "jsonc-parser": "^3.0.0",
+    "mbcore-gametest": "^2.5.1",
     "require-from-string": "^2.0.2",
     "tsify": "^5.0.4",
     "window": "^4.2.7"
   },
   "devDependencies": {
-    "@types/mojang-gametest": "^0.1.4",
-    "@types/mojang-minecraft": "^0.1.5",
-    "@types/node": "^17.0.34",
+    "@types/mojang-gametest": "^0.1.5",
+    "@types/mojang-minecraft": "^0.1.6",
+    "@types/node": "^17.0.35",
     "tinyify": "^3.0.0"
   }
 }
