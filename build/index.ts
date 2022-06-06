@@ -5,39 +5,26 @@ import * as json from "jsonc-parser";
 import { Options } from "browserify";
 import * as packageJson from "../package.json";
 import config from "../unnamed.config";
+import path from "path";
 
 //import chalk from "chalk";
 //const chalk = import("chalk");
-console.time("compile");
 
 const tsConfig = json.parse(
 	fs.readFileSync("./tsconfig.json", "utf8")
 ) as Record<string, any>;
 
-const _requireESM_ = (m) => {
-	let M;
-	(async () => {
-		M = await import(m);
-	})();
-	return M;
-};
+const _requireESM_ = (m) => {};
 
 let browserifyConfig: Options = {
 	browserField: "minecraft-bedrock",
 	detectGlobals: true,
 	ignoreMissing: true,
 	insertGlobalVars: {
-		_requireESM_: (m) => {
-			let M;
-			(async () => {
-				M = await import(m);
-			})();
-			return M;
-		},
-		setTimeout: require("mbcore-gametest").setTickTimeout,
-		setInterval: require("mbcore-gametest").setTickInterval,
-		clearTimeout: require("mbcore-gametest").clearTickTimeout,
-		clearInterval: require("mbcore-gametest").clearTickInterval,
+		//setTimeout: require("mbcore-gametest").setTickTimeout,
+		//setInterval: require("mbcore-gametest").setTickInterval,
+		//clearTimeout: require("mbcore-gametest").clearTickTimeout,
+		//clearInterval: require("mbcore-gametest").clearTickInterval,
 	},
 	plugin: [[tsify, tsConfig]],
 };
@@ -62,8 +49,6 @@ b.plugin((b, opts) => {
 		}
 	});
 });*/
-b.transform("brfs");
-//b.transform("json");
 
 //b.plugin("tinyify", { env: {} });
 
@@ -72,27 +57,44 @@ const bundle = b.bundle();
 b.on("error", (error) => {
 	console.error(error.toString());
 });
-
+// use allowed modules some how
 bundle.pipe(
 	fs.createWriteStream(config.outFile).on("close", () => {
-		let fileRead = fs.readFileSync("beforeExecution.js", "utf8");
-		+fs.readFileSync(config.outFile, "utf8");
+		let outFile = fs.readFileSync(config.outFile, "utf8");
 
+		let duplicates: string[] = [];
+		let _requireMojangEsmModuleImports_ = "";
+		let _requireMojangEsmModule_ = `export default (module) => {
+	switch (module) {\n`;
+
+		outFile = outFile.replace(
+			/require\(\"(mojang[a-z\-]*)\"\)/g,
+			(match, p1): string => {
+				console.log(match);
+				if (duplicates.indexOf(p1) == -1) {
+					let p1Replace = p1.replace("-", "_");
+					_requireMojangEsmModuleImports_ += `import ${p1Replace} from "${p1}"\n`;
+					_requireMojangEsmModule_ += `		case "${p1}": return ${p1Replace};\n`;
+					duplicates.push(p1);
+				}
+				return `_requireMojangEsmModule_("${p1}")`;
+			}
+		);
+		let beforeExeDir = config.outFile.split("/");
+		beforeExeDir.pop();
+		fs.writeFileSync(
+			beforeExeDir.join("/") + "/beforeBrowserify.js",
+			_requireMojangEsmModuleImports_ + _requireMojangEsmModule_ + "	}\n}"
+		);
 		fs.writeFileSync(
 			config.outFile,
-			fileRead.replace(
-				/require\(\"(mojang[a-z\-]*)\"\)/g,
-				(match, p1): string => {
-					return `_requireESM_("${p1}")`;
-				}
-			)
+			`import _requireMojangEsmModule_ from "./beforeBrowserify.js"\n` +
+				outFile
 		);
 	})
 );
 
-console.timeEnd("compile");
-
-const requireESM = (module: string) => {
+const requireESM = (module) => {
 	let esmModule;
 	(async () => {
 		esmModule = await import(module);

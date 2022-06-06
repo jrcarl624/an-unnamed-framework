@@ -21,5 +21,4 @@ interface Plugin {
 	function: (...args) => {};
 }
 
-console.log(12141342341124);
-import("brfs");
+
